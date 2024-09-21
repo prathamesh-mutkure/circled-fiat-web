@@ -34,5 +34,10 @@ export const dashboardConfig: DashboardConfig = {
       href: "/dashboard/send",
       icon: "Send",
     },
+    {
+      title: "Receive",
+      href: "/dashboard/receive",
+      icon: "Receipt",
+    },
   ],
 };
