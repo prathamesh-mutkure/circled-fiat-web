@@ -15,7 +15,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
-import { QrCode } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 const metadata = {
   title: "Payments Page",
@@ -23,26 +24,81 @@ const metadata = {
 };
 
 export default function PaymentsPage() {
+  const router = useRouter();
+
   const [toAddress, setToAddress] = useState(
     "0x927a1477c90ddd07c220aa1aa595db6d45d16217"
   );
   const [tokenAmount, setTokenAmount] = useState(0.1);
   const [receivingChain, setReceivingChain] = useState("Arbitrum");
+  const [trackingId, setTrackingId] = useState<null | string>(null);
 
   const [txHash, setTxHash] = useState<null | string>(null);
 
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [qrData, setQrData] = useState<null | string>(null);
 
+  useEffect(() => {
+    if (!trackingId) return;
+
+    // const data = JSON.parse(qrData) as {
+    //   toAddress: string;
+    //   tokenAmount: number;
+    //   receivingChain: string;
+    //   trackingId: string;
+    // };
+
+    const checkStatus = setInterval(async () => {
+      try {
+        const res = await axiosInstance.get(`/paypal/track/${trackingId}`);
+
+        if (res.data) {
+          clearInterval(checkStatus);
+          toast({
+            title: "Payment Received",
+            description: `Redirecting to the transaction page...`,
+          });
+
+          // TODO: Redirect to the transaction page
+          router.replace(`/dashboard/transactions`);
+        }
+      } catch {
+        console.error("Waiting for connection...");
+      }
+    }, 1000);
+
+    // Add a timeout to stop polling after a certain time
+    setTimeout(() => {
+      clearInterval(checkStatus);
+    }, 1000 * 60);
+
+    return () => {
+      clearInterval(checkStatus);
+    };
+  }, [trackingId]);
+
   async function handlePayment() {
     try {
       setIsPaymentProcessing(true);
+      const trackingId = uuidv4();
 
-      const data = JSON.stringify({ toAddress, tokenAmount, receivingChain });
+      const data = {
+        toAddress,
+        tokenAmount,
+        receivingChain,
+        trackingId,
+      };
 
-      console.log(data);
+      const searchParams = new URLSearchParams({
+        ...data,
+        tokenAmount: tokenAmount.toString(),
+      }).toString();
 
-      setQrData(data);
+      setQrData(
+        `https://c51f-223-255-254-102.ngrok-free.app/dashboard/send?${searchParams}`
+      );
+
+      setTrackingId(trackingId);
     } catch (err) {
       console.log(err);
       toast({

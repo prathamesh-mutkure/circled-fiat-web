@@ -29,6 +29,8 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@types/uuid": "^10.0.0",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "axios": "^1.7.7",
     "braintree-web": "^3.108.0",
     "braintree-web-drop-in": "^1.43.0",
@@ -50,6 +52,7 @@
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0",
     "vaul": "^0.9.4",
     "zod": "^3.23.8"
   },

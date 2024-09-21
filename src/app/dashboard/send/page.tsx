@@ -16,6 +16,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
+import { Scanner } from "@yudiel/react-qr-scanner";
+import { useParams, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const metadata = {
   title: "Payments Page",
@@ -23,14 +26,19 @@ const metadata = {
 };
 
 export default function PaymentsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [clientToken, setClientToken] = useState<string | null>(null);
   const [dropinInstance, setDropinInstance] = useState<Dropin | null>(null);
 
   const [toAddress, setToAddress] = useState(
-    "0x927a1477c90ddd07c220aa1aa595db6d45d16217"
+    searchParams.get("toAddress") ??
+      "0x927a1477c90ddd07c220aa1aa595db6d45d16217"
   );
   const [tokenAmount, setTokenAmount] = useState(0.1);
-
+  const [trackingId, setTrackingId] = useState("");
+  const [receivingChain, setReceivingChain] = useState("");
   const [txHash, setTxHash] = useState<null | string>(null);
 
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
@@ -45,6 +53,29 @@ export default function PaymentsPage() {
 
     fetchClientToken();
   }, []);
+
+  useEffect(() => {
+    const toAddress = searchParams.get("toAddress");
+    const tokenAmount = searchParams.get("tokenAmount");
+    const receivingChain = searchParams.get("receivingChain");
+    const trackingId = searchParams.get("trackingId");
+
+    if (trackingId) {
+      setTrackingId(trackingId);
+    }
+
+    if (receivingChain) {
+      setReceivingChain(receivingChain);
+    }
+
+    if (toAddress) {
+      setToAddress(toAddress);
+    }
+
+    if (tokenAmount) {
+      setTokenAmount(parseFloat(tokenAmount));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function initDropIn() {
@@ -100,6 +131,7 @@ export default function PaymentsPage() {
         nonce,
         toAddress: toAddress,
         tokenAmount,
+        trackingId,
       };
 
       const res = await axiosInstance.post("/paypal/checkout", payload);
@@ -117,6 +149,8 @@ export default function PaymentsPage() {
         title: data.message,
         description: `Transaction Hash: ${data.txHash}`,
       });
+
+      router.replace(`/dashboard/transactions`);
     } catch (err) {
       console.log(err);
       toast({
@@ -139,6 +173,19 @@ export default function PaymentsPage() {
 
       <div className="max-w-screen-sm">
         <div className="grid gap-2 mb-4">
+          <div className="max-h-34">
+            {/* <Scanner
+              onScan={(result) => {
+                toast({
+                  title: "Scanned QR Code",
+                });
+              }}
+              classNames={{
+                container: "",
+              }}
+            /> */}
+          </div>
+
           <Alert>
             <AlertDescription className="text-muted-foreground">
               For testing purposes, we have restricted the amount between
