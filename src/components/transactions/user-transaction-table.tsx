@@ -33,7 +33,7 @@ export default function UserTransactionsTable() {
         const data = res.data as TUserTransaction[];
 
         const total = data.reduce(
-          (acc, txn) => acc + (txn.aptosPayment?.aptosAmount ?? 0),
+          (acc, txn) => acc + (txn.onchainPayment?.tokenAmount ?? 0),
           0
         );
 
@@ -56,8 +56,6 @@ export default function UserTransactionsTable() {
     return <p>Loading...</p>;
   }
 
-  // https://explorer.aptoslabs.com/txn
-
   return (
     <Table>
       <TableCaption>A list of your recent transactions.</TableCaption>
@@ -67,7 +65,7 @@ export default function UserTransactionsTable() {
           <TableHead>Status</TableHead>
           <TableHead>Date</TableHead>
           <TableHead>TxHash</TableHead>
-          <TableHead className="text-right">APT</TableHead>
+          <TableHead className="text-right">USDC</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -81,18 +79,18 @@ export default function UserTransactionsTable() {
             <TableCell>
               <Link
                 href={
-                  txn.aptosPayment?.txHash
-                    ? `https://explorer.aptoslabs.com/txn/${txn.aptosPayment.txHash}?network=testnet`
+                  txn.onchainPayment?.txHash
+                    ? `https://explorer.circle.com/txn/${txn.onchainPayment.txHash}?network=testnet`
                     : "#"
                 }
                 target="_blank"
                 className="underline"
               >
-                {shortenLongStrings(txn.aptosPayment?.txHash ?? "", 5)}
+                {shortenLongStrings(txn.onchainPayment?.txHash ?? "", 5)}
               </Link>
             </TableCell>
             <TableCell className="text-right">
-              +{txn.aptosPayment?.aptosAmount ?? "-"}
+              +{txn.onchainPayment?.tokenAmount ?? "-"}
             </TableCell>
           </TableRow>
         ))}

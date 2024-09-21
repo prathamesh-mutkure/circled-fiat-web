@@ -95,49 +95,11 @@ export default function SettingsForm() {
     loadData();
   }, []);
 
-  function getAptosWallet() {
-    if ("aptos" in window) {
-      return window.aptos;
-    } else {
-      window.open("https://petra.app/", `_blank`);
-    }
-  }
+  function getWallet() {}
 
-  async function connectToPetraWallet() {
-    // @ts-ignore
-    const isPetraInstalled = window?.aptos;
+  async function connectToPetraWallet() {}
 
-    const wallet: any = getAptosWallet();
-
-    try {
-      const response = (await wallet.connect()) as TWalletData;
-      const account = (await wallet.account()) as TWalletData;
-
-      if (!account.address) {
-        throw new Error("Failed to connect to Petra Wallet");
-      }
-
-      form.setValue("walletAddress", account.address);
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Failed to connect to Petra Wallet",
-      });
-    }
-  }
-
-  async function disconnectToPetraWallet() {
-    // @ts-ignore
-    const isPetraInstalled = window?.aptos;
-
-    if (!isPetraInstalled) {
-      return;
-    }
-
-    const wallet: any = getAptosWallet();
-
-    await wallet.disconnect();
-  }
+  async function disconnectToPetraWallet() {}
 
   return (
     <Form {...form}>
@@ -149,7 +111,7 @@ export default function SettingsForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="AptCash" {...field} />
+                <Input placeholder="Circled Fiat" {...field} />
               </FormControl>
               <FormDescription>
                 This will be visible to user while paying on gateway
@@ -165,7 +127,7 @@ export default function SettingsForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="admin@aptcash.com" {...field} disabled />
+                <Input placeholder="admin@circled.fiat" {...field} disabled />
               </FormControl>
               <FormDescription>
                 This will be your communication address
@@ -238,7 +200,7 @@ export default function SettingsForm() {
                   </Button>
                 </div>
               </FormControl>
-              <FormDescription>Enter or connect Aptos Wallet</FormDescription>
+              <FormDescription>Enter or connect Circle Wallet</FormDescription>
               <FormMessage />
             </FormItem>
           )}

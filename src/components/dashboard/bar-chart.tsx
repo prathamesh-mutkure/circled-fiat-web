@@ -157,7 +157,7 @@ export function DashboardBarChart() {
                 // onClick={() => setActiveChart(chart)}
               >
                 <span className="text-xs text-muted-foreground">
-                  Total (APT)
+                  Total (USDC)
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
                   {total[key as keyof typeof total].toLocaleString()}
