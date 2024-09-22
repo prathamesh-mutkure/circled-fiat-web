@@ -113,8 +113,8 @@ export default function PaymentsPage() {
   return (
     <DashboardShell>
       <DashboardHeader
-        heading="Send USDC"
-        text="Page to send USDC through Fiat/Paypal"
+        heading="Receive USDC"
+        text="Page to receive USDC through Fiat/Paypal using QR"
       />
 
       <div className="max-w-screen-sm">
