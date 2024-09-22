@@ -95,7 +95,7 @@ export default function PaymentsPage() {
       }).toString();
 
       setQrData(
-        `https://c51f-223-255-254-102.ngrok-free.app/dashboard/send?${searchParams}`
+        `https://circled-fiat-web.vercel.app/dashboard/send?${searchParams}`
       );
 
       setTrackingId(trackingId);
